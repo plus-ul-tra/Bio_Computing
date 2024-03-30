@@ -1,0 +1,2 @@
+longest repeated segment : ATCG
+len : 4
