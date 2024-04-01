@@ -43,18 +43,21 @@ def finding_repeat_segment(dna_sequences):
     longest_segment =''
 
     # R.E
+    # 같은패턴이 연속으로 등장한 경우 처음 부분만 출력
     pattern = re.compile(r'(.+?)\1+')
+    if dna_sequences == 'no DNA sequence':
+        longest_segment ='no DNA sequence'
+    else:
+        for sequence in dna_sequences:
+            segment = pattern.findall(sequence)
+            if segment:
+                #segment 중  len가 가장 큰 값
+                max_segment = max(segment, key =len)
 
-    for sequence in dna_sequences:
-        segment = pattern.findall(sequence)
-        if segment:
-            #segment 중  len가 가장 큰 값
-            max_segment = max(segment, key =len)
-
-        if longest_len < len(max_segment):
-            longest_len = len(max_segment)
-            longest_segment =(max_segment)
-            
+            if longest_len < len(max_segment):
+                longest_len = len(max_segment)
+                longest_segment =(max_segment)
+                
 
     
 
@@ -63,12 +66,23 @@ def finding_repeat_segment(dna_sequences):
 
 def output_data(filename, segment):
     file = open(filename,'w')
-    if segment:
-        s = 'longest repeated segment : ' + segment +'\n' +'len : ' + str(len(segment))
+
+    # longest repeated segment가 2이상인 경우만 출력
+
+    # 빈 파일의 경우 (DNA없는 경우)
+    if 'no DNA sequence' == segment:
+        s = segment + ' (empty file)'
         file.write(s)
-    else :
-        s ='no repeat'    
-        file.write(s)
+    else:
+        if len(segment) > 1:
+            s = 'longest repeated segment : ' + segment +'\n' +'len : ' + str(len(segment))
+            file.write(s)
+
+        # 반복되는 항목이 없는 경우
+        elif len(segment) == 1 :
+            s ='No repeats'    
+            file.write(s)
+    
     file.close()
     return 0 
 

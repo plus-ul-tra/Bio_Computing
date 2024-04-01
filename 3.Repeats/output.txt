@@ -1,2 +1,1 @@
-longest repeated segment : ATCG
-len : 4
+no DNA sequence (empty file)
