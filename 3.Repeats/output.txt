@@ -1,1 +1,2 @@
-no DNA sequence (empty file)
+longest repeated segment : CGACTAGCA
+len : 9

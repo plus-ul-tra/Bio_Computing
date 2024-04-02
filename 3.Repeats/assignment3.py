@@ -1,5 +1,7 @@
 import sys
 import re
+import time
+
 
 def get_input_data(filename):
 
@@ -27,8 +29,8 @@ def get_input_data(filename):
     if current_sequence:
       gene_list.append(current_sequence)
     else :
-       # 아무 데이터도 없는 경우
-       gene_list = 'no DNA sequence'
+       # 아무 데이터도 없는 경우 = empty file
+       gene_list = 'No DNA sequence'
 
 
     input_file.close()    
@@ -45,10 +47,17 @@ def finding_repeat_segment(dna_sequences):
     # R.E
     # 같은패턴이 연속으로 등장한 경우 처음 부분만 출력
     pattern = re.compile(r'(.+?)\1+')
-    if dna_sequences == 'no DNA sequence':
-        longest_segment ='no DNA sequence'
+    if dna_sequences == 'No DNA sequence':
+        longest_segment ='No DNA sequence'
+        
     else:
         for sequence in dna_sequences:
+
+            # DNA 서열이 아닌 문자가 sequence에 포함되는 경우
+            if any(base not in "ATCGatcg" for base in sequence):
+                longest_segment = 'No correct format'
+                break
+
             segment = pattern.findall(sequence)
             if segment:
                 #segment 중  len가 가장 큰 값
@@ -56,7 +65,7 @@ def finding_repeat_segment(dna_sequences):
 
             if longest_len < len(max_segment):
                 longest_len = len(max_segment)
-                longest_segment =(max_segment)
+                longest_segment = max_segment
                 
 
     
@@ -70,8 +79,11 @@ def output_data(filename, segment):
     # longest repeated segment가 2이상인 경우만 출력
 
     # 빈 파일의 경우 (DNA없는 경우)
-    if 'no DNA sequence' == segment:
+    if 'No DNA sequence' == segment:
         s = segment + ' (empty file)'
+        file.write(s)
+    elif 'No correct format' == segment:
+        s = segment
         file.write(s)
     else:
         if len(segment) > 1:
@@ -88,15 +100,23 @@ def output_data(filename, segment):
 
 
 def main(): 
-    input_filename = 'test.txt'
+    #input_filename = 'test.txt'
     #input_filename = 'input.txt'
-    output_filename = 'output.txt'
-    #input_filename = sys.argv[1]    
-    #output_filename = sys.argv[2]
+    #output_filename = 'output.txt'
+    input_filename = sys.argv[0]    
+    output_filename = sys.argv[1]
+
     comment, dna_sequence = get_input_data(input_filename)
-    
+
+    start_time= time.time()
     longest_segment = finding_repeat_segment(dna_sequence)
+    end_time = time. time()
+
+    elapsed_time = end_time - start_time
     output_data(output_filename, longest_segment)
+    print(f"Elapsed Time: {elapsed_time:f} microseconds")
+
+
     return 0
 
 if __name__ == '__main__':
