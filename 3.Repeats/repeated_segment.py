@@ -29,38 +29,30 @@ def get_input_data(filename):
           else:
                 current_sequence += line
 
-    
-    if current_sequence:
-      gene_list.append(current_sequence)
-    else :
-       # 아무 데이터도 없는 경우 = empty file
-       gene_list = 'No DNA sequence'
-
 
     input_file.close()    
 
     # input data에 등장하는 모든 comment와 sequence list, return
     return comment_list, gene_list
 
+    
 
 def finding_repeat_segment(dna_sequences):
     # dna_sequences = sequence list
     longest_len = 0
     longest_segment =''
+    sequence = dna_sequences[0]
 
     # R.E
-    # 같은패턴이 연속으로 등장한 경우 처음 부분만 출력
-    pattern = re.compile(r'(.+?)\1+')
+   
+    pattern = re.compile(r'(.+)(?:\1)+')
     if dna_sequences == 'No DNA sequence':
         longest_segment ='No DNA sequence'
         
     else:
-        for sequence in dna_sequences:
-
             # DNA 서열이 아닌 문자가 sequence에 포함되는 경우
             if any(base not in "ATCGatcg" for base in sequence):
                 longest_segment = 'No correct format'
-                break
 
             segment = pattern.findall(sequence)
             if segment:
@@ -71,10 +63,6 @@ def finding_repeat_segment(dna_sequences):
                 longest_len = len(max_segment)
                 longest_segment = max_segment
                 
-
-    
-
-
     return longest_segment
 
 def output_data(filename, segment):
@@ -103,12 +91,13 @@ def output_data(filename, segment):
     return 0 
 
 
-def main(): 
-    #input_filename = 'test.txt'
+
+
+def main():
     #input_filename = 'input.txt'
-    #output_filename = 'output.txt'
-    input_filename = sys.argv[0]    
-    output_filename = sys.argv[1]
+    #output_filename = 'output.txt' 
+    input_filename = sys.argv[1]    
+    output_filename = sys.argv[2]
 
     comment, dna_sequence = get_input_data(input_filename)
 

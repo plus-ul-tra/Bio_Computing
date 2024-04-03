@@ -1,2 +1,2 @@
-longest repeated segment : CGACTAGCA
-len : 9
+longest repeated segment : TGCATGCATGCA
+len : 12
