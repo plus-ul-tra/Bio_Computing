@@ -10,20 +10,27 @@ def get_input_data(filename):
     gene_list = list()
     current_sequence = ''
     
+    first_char = input_file.read(1)
+    input_file.seek(0)
+
+    if first_char:
     # \n를 고려하여 다음 comment, 즉 '>' 발견 전까지 모두 dna sequence로 설정.
-    for line in input_file:
-          line = line.strip() 
+        for line in input_file:
+            line = line.strip()
 
-          if line.startswith('>'):
-             comment_list.append(line)
+            if line.startswith('>'):
+                comment_list.append(line)
 
-             if current_sequence:
-                gene_list.append(current_sequence)
+                if current_sequence:
+                    gene_list.append(current_sequence)
 
-             current_sequence = ''
+                current_sequence = ''
 
-          else:
-                current_sequence += line
+            else:
+                    current_sequence += line
+    else:
+        gene_list.append('file empty')
+        return gene_list
 
     if current_sequence:
       gene_list.append(current_sequence)
@@ -38,12 +45,18 @@ def get_input_data(filename):
     return gene_list
 
 
-
-
-
 def edit_distance_measure(sequences):
+
+    if sequences[0] == 'file empty':
+        # 빈 파일의 경우, dna sequence 하나인 경우 -1 반환
+        return -1
+    
+    elif len(sequences) == 1:
+        # sequence가 1개만 존재하는 경우
+        return -2
+
     seq1 = sequences[0]
-    seq2 = sequences[1] 
+    seq2 = sequences[1]
 
     m,n = len(seq1), len(seq2)
 
@@ -62,11 +75,14 @@ def edit_distance_measure(sequences):
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             cost = 0 if seq1[i - 1] == seq2[j - 1] else 1
-            dp[i][j] = min(dp[i - 1][j] + 1,       # 삽입
-                           dp[i][j - 1] + 1,       # 삭제
-                           dp[i - 1][j - 1] + cost)  # 대체
+            dp[i][j] = min( # 삽입
+                            dp[i - 1][j] + 1,       
+                            # 삭제
+                            dp[i][j - 1] + 1,      
+                            # 대체
+                            dp[i - 1][j - 1] + cost)  
     
-    # 최소 편집 거리 반환
+    # minimun edit distance 반환
     return dp[m][n]
 
 
@@ -78,6 +94,7 @@ def output_data(filename, data):
 
 def main():
     input_filename = 'input.txt'
+    #input_filename = 'empty.txt'
     output_filename = 'output.txt' 
     #input_filename = sys.argv[1]    
     #output_filename = sys.argv[2]
