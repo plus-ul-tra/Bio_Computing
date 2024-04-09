@@ -45,7 +45,11 @@ def get_input_data(filename):
     return gene_list
 
 
+
+
 def edit_distance_measure(sequences):
+
+    dna_form = "ATGCatgc"
 
     if sequences[0] == 'file empty':
         # 빈 파일의 경우, dna sequence 하나인 경우 -1 반환
@@ -55,15 +59,19 @@ def edit_distance_measure(sequences):
         # sequence가 1개만 존재하는 경우
         return -2
 
+        # 공백이나 염기서열이 아닌 문자가 포함되는 경우 (처음 2개만 검사)
+    for sequence in sequences[:2]:
+        for dna in sequence:
+            if dna not in "ATGCatgc":
+                return -1
+    #추가
+
+    # sequence가 두개 이상인 경우 처음 두개만 비교
     seq1 = sequences[0]
     seq2 = sequences[1]
 
     m,n = len(seq1), len(seq2)
-
-    if 2 != len(sequences):
-        return 0
-    else :
-        dp = np.zeros((m + 1, n + 1), dtype=int)
+    dp = np.zeros((m + 1, n + 1), dtype=int)
     
     # 첫 번째 행과 열 초기화
     for i in range(m + 1):
@@ -71,10 +79,10 @@ def edit_distance_measure(sequences):
     for j in range(n + 1):
         dp[0][j] = j
     
-    # use dynamic programming
+    # use dynamic programming / case insensitive
     for i in range(1, m + 1):
         for j in range(1, n + 1):
-            cost = 0 if seq1[i - 1] == seq2[j - 1] else 1
+            cost = 0 if seq1[i - 1].upper() == seq2[j - 1].upper() else 1
             dp[i][j] = min( # 삽입
                             dp[i - 1][j] + 1,       
                             # 삭제
@@ -85,31 +93,39 @@ def edit_distance_measure(sequences):
     # minimun edit distance 반환
     return dp[m][n]
 
+def output_data(filename, distance):
 
-def output_data(filename, data):
+    output_file = open(filename, 'w')
+
+    if distance == -1:
+        s ='No DNA sequence'
+    elif distance == -2 :
+        s ='Need more sequences'
+    else :
+        s = 'edit distance : ' + str(distance)
     
+    output_file.write(s)
+    output_file.close()
+
     return 0
 
 
-
 def main():
-    input_filename = 'input.txt'
+    #input_filename = 'input.txt'
     #input_filename = 'empty.txt'
-    output_filename = 'output.txt' 
-    #input_filename = sys.argv[1]    
-    #output_filename = sys.argv[2]
+    #output_filename = 'output.txt' 
+    input_filename = sys.argv[1]    
+    output_filename = sys.argv[2]
 
     dna_sequence = get_input_data(input_filename)
 
     #start_time= time.time()
-    dp = edit_distance_measure(dna_sequence)
+    edit_distance = edit_distance_measure(dna_sequence)
     #end_time = time.time()
 
     #elapsed_time = end_time - start_time
-
-    print(dp)
-    #output_data(output_filename,)
-    
+    print(edit_distance)
+    output_data(output_filename, edit_distance)
     #print(f"Elapsed Time: {elapsed_time:f} microseconds")
 
 
