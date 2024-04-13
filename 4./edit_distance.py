@@ -111,22 +111,19 @@ def output_data(filename, distance):
 
 
 def main():
-    #input_filename = 'input.txt'
-    #input_filename = 'empty.txt'
-    #output_filename = 'output.txt' 
     input_filename = sys.argv[1]    
     output_filename = sys.argv[2]
 
     dna_sequence = get_input_data(input_filename)
 
-    #start_time= time.time()
+    start_time= time.time()
     edit_distance = edit_distance_measure(dna_sequence)
-    #end_time = time.time()
+    end_time = time.time()
 
-    #elapsed_time = end_time - start_time
+    elapsed_time = end_time - start_time
     print(edit_distance)
     output_data(output_filename, edit_distance)
-    #print(f"Elapsed Time: {elapsed_time:f} microseconds")
+    print(f"Elapsed Time: {elapsed_time:f} microseconds")
 
 
     return 0
