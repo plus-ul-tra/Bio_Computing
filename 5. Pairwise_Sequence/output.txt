@@ -1,0 +1,3 @@
+seqeunce1 : GCA-TGCG
+sequence2 : G-ATTACA
+score :2
