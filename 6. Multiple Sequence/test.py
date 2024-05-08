@@ -1,28 +1,34 @@
-# 주어진 4개의 문자열
+msa =list()
 
-# MSA_list -> 모두 global alignment로 완성된 sequence
-def searching_same_char(MSA_list):
+s1 = "012345678901234567890123456789012345678901234567890123456789"
+s2 = "------------------------------------------------------------"
+s3 = "dickdickdickdickdickdickdickdickdickdickdickdickdickdickdick"
+s4 = "gyumgyumgyumgyumgyumgyumgyumgyumgyumgyumgyumgyumgyumgyumgyum"
+st = "************-----------------*******************************"
+msa.append(s1)
+msa.append(s2)
+msa.append(s3)
+msa.append(s4)
 
-    strings = ["AsdD", "A-CD", "A-fD", "A---"]
+def output_data(filename, msa, star):
+    output_file =open(filename, 'w')
+    s =""
     
-    length = len(strings[0])
-    star_list=list()
-    
-    for i in range(length):
-        
-        characters = [s[i] for s in strings]
-        
-        if all(char == characters[0] for char in characters):
-            star_list.append("*")
-        else:
-            star_list.append(" ")
+    if len(msa[0]) > 50 :
+        msa.append(star)
+        chunk_num = len(msa[0]) // 50
+        # 180 의 경우 몫 3
+        for i in range(0,chunk_num):
+            for line in msa:
+                # 한줄씩 가져와서
+                s+=line[i*50:(i+1)*50] +'\n'
 
 
-    for i in range(len(strings)):
-        print(strings[i])
 
-    result = ''.join(star_list)
-    print(result)
+    output_file.write(s)
+    output_file.close()
 
-    return result
+    return 0
 
+output = 'testoutput.txt'
+output_data(output,msa,st)
