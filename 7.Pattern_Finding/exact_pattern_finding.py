@@ -1,4 +1,4 @@
-import numpy as np
+
 import time
 import sys
 import os
@@ -85,9 +85,15 @@ def exception_check(data_list):
     return code, new_data_list
 
 # 정상 알고리즘 출력
-def result_output(filename, data):
+def result_output(filename, data,length):
     output_file = open(filename, 'w')
+    if data:
+        s = 'length '+ str(length) +' pattern : ' + str(data)
 
+    else:
+        s = 'No pattern found'
+
+    output_file.write(s)
     output_file.close()
     return 0
 
@@ -114,36 +120,40 @@ def exception_output(filename, code):
     return 0
 
 
-def pattern_finding(sequences):
+def pattern_finding(sequences,pattern_length):
 
+    patterns = set(sequences[0][i:i+pattern_length] for i in range(len(sequences[0]) - pattern_length + 1))
 
+    for sequence in sequences[1:]:
+        current_patterns = set(sequence[i:i+pattern_length] for i in range(len(sequence) - pattern_length + 1))
+        patterns &= current_patterns
 
-    return 0
+    return patterns
 
 
 
 def main():
-    input_filename ='input.txt'
-    output_filename ='output.txt'
-    #input_filename = sys.argv[1]    
-    #output_filename = sys.argv[2]
-    #pattern_length = int.(sys.argv[3])
+    #input_filename ='input.txt'
+    #output_filename ='output.txt'
+    #pattern_length = 8
+    input_filename = sys.argv[1]    
+    output_filename = sys.argv[2]
+    pattern_length = int(sys.argv[3])
     if not os.path.exists(input_filename):
         print("No input file")
         return 0
     
     ex_code, dna_sequence = get_input_data(input_filename)
-    
-    print(ex_code)
+
     if ex_code != 0:
         exception_output(output_filename,ex_code)
         return 0
-    #start_time= time.time()
-    result = pattern_finding(dna_sequence)
-    #end_time = time.time()
-    #elapsed_time = (end_time - start_time) * 1000000
-    #print(f"Elapsed Time: {elapsed_time:f} microseconds")
-    result_output(output_filename, result)
+    start_time= time.time()
+    result = pattern_finding(dna_sequence, pattern_length)
+    end_time = time.time()
+    elapsed_time = (end_time - start_time) * 1000000
+    print(f"Elapsed Time: {elapsed_time:f} microseconds")
+    result_output(output_filename, result, pattern_length)
     
     return 0
 
