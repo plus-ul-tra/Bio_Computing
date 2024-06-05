@@ -1,0 +1,10 @@
+>dikk
+AGTCAA
+>lemon
+CCTCAA
+>fish
+GGTCAC
+>orange
+GGTCAA
+>orang
+GGTCAc
